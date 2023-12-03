@@ -7,7 +7,6 @@ function Main() {
   return (
     <div>
       <Header/>
-      <h1>실시간 위치 지도</h1>
       <MapComponent />
       <Footer/>
     </div>
