@@ -14,21 +14,16 @@ interface IHeader {
   border?: string | number;
   newAlert?: boolean;
 }
-
-const StyledHeader = styled.button<IHeader>`
-  width: ${({ width }) => width};
+const StyledHeader = styled.header<IHeader>`  // changed from button to header for semantic HTML, adjust as needed
+  width: 100%;  // Take full viewport width
+  max-width: 43rem;  // Match the same max-width as other components
+  margin: 0 auto;  // Center the header within the max-width
   background-color: ${({ backgroundColor }) => backgroundColor};
   color: ${({ color }) => color};
   font-weight: ${({ fontWeight }) => fontWeight};
   padding: ${({ padding }) => padding};
-  text: ${({ text }) => text};
   font-size: ${({ fontSize }) => fontSize};
   text-align: center;
-  :disabled {
-    background-color: ${theme.colors.Color_Orange.heavy};
-    color: ${theme.colors.Color_Gray_2};
-    cursor: not-allowed;
-  }
   border: ${({ border }) => border};
   position: fixed;
   top: 0;
