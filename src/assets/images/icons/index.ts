@@ -14,6 +14,7 @@ export { ReactComponent as IcStar } from './IcStar.svg';
 export { ReactComponent as IcWestern } from './IcWestern.svg';
 export { ReactComponent as IcWorld } from './IcWorld.svg';
 export { ReactComponent as IcSetting } from './IcSetting.svg';
+export { ReactComponent as IcSearch } from './IcSearch.svg';
 
 
 export { default as PicBoo } from './IcBoo.svg';
