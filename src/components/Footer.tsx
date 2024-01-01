@@ -13,35 +13,34 @@ interface IFooter {
   disabled?: boolean;
   border?: string | number;
 }
-
-const StyledFooter = styled.button<IFooter>`
-  width: ${({ width }) => width};
+const StyledFooter = styled.footer<IFooter>`  // Assuming footer makes more semantic sense
+  width: 100%;  // Take full viewport width
+  max-width: 43rem;  // Match the same max-width as other components
+  margin-left: auto;  // Center the footer within the max-width
+  margin-right: auto;  // Center the footer within the max-width
   background-color: ${({ backgroundColor }) => backgroundColor};
   color: ${({ color }) => color};
   font-weight: ${({ fontWeight }) => fontWeight};
   padding: ${({ padding }) => padding};
-  text: ${({ text }) => text};
   font-size: ${({ fontSize }) => fontSize};
   text-align: center;
-  :disabled {
-    background-color: ${theme.colors.Color_Orange.heavy};
-    color: ${theme.colors.Color_Gray_2};
-    cursor: not-allowed;
-  }
   border: ${({ border }) => border};
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
   display: flex;
   justify-content: space-around;
   align-items: center;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border-top: 2px solid ${theme.colors.Color_Gray_4};
-`;
+  z-index: 1000;  // Ensure it stays on top if needed
 
+  :disabled {
+    background-color: ${theme.colors.Color_Orange.heavy};
+    color: ${theme.colors.Color_Gray_2};
+    cursor: not-allowed;
+  }
+`;
 const Footer = ({
   width = "100%",
   backgroundColor = theme.colors.Color_White,
