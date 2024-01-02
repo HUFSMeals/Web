@@ -7,7 +7,7 @@ import { PicBoo, PicKorean, PicSoju, PicBoonsik } from '../../assets/images/icon
 
 const StyledMap = styled.div`
   height: calc(100vh - 70px - 40px);
-  margin-top: 72px;
+  margin-top: 15px;
 `;
 
 const MapComponent = () => {
