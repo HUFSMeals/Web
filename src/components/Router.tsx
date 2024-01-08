@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../pages/main/index";
 import MyPage from "../pages/mypage";
 import Notice from "../pages/notice";
+import Login from "../pages/login";
 
 const Router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const Router = createBrowserRouter([
   {
     path: "/notice",
     element: <Notice />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
