@@ -57,3 +57,7 @@ export { default as Chevron_Right } from './Chevron_Right.svg';
 export { default as Close } from './icon-close.svg';
 export { ReactComponent as IcHUFSMEALS } from './IcHUFSMEALS.svg';
 export { ReactComponent as IcGoogleLogin } from './IcGoogleLogin.svg';
+
+export { ReactComponent as IcCall } from './IcCall.svg';
+export { ReactComponent as IcLocation } from './IcLocation.svg';
+export { ReactComponent as IcTime } from './IcTime.svg';
