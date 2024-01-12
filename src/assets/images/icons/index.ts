@@ -61,3 +61,4 @@ export { ReactComponent as IcGoogleLogin } from './IcGoogleLogin.svg';
 export { ReactComponent as IcCall } from './IcCall.svg';
 export { ReactComponent as IcLocation } from './IcLocation.svg';
 export { ReactComponent as IcTime } from './IcTime.svg';
+export { ReactComponent as IcCamera } from './IcCamera.svg';

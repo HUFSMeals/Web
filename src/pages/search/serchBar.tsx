@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
 import { IcSearch } from '../../assets/images/icons';
 
-const maxWidth = '43rem';
+export const maxWidth = '43rem';
 
 const SearchContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 5px auto;
-  max-width: ${maxWidth};
 `;
 
-const InputContainer = styled.div`
+const InputContainer = styled.div<{ maxWidth: string }>`
   position: relative;
   margin-top: 80px;
-  width: calc(100% - 40px); // 좌우로 20px 씩 여백을 줘서 총 40px을 빼줍니다.
-  margin-left: auto;  // 중앙 정렬
-  margin-right: auto; // 중앙 정렬
+  width: calc(${props => props.maxWidth} - 40px);
+  margin-left: auto;
+  margin-right: auto;
 `;
+
 
 const SearchInput = styled.input`
   padding: 10px;
@@ -40,9 +41,18 @@ const SearchIcon = styled(IcSearch)`
   height: 20px;
 `;
 
+// SearchBar 컴포넌트의 props 타입을 정의합니다.
+interface SearchBarProps {
+  maxWidth: string;
+}
 
-const SearchBar = () => {
+interface SearchBarProps {
+  maxWidth: string;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -50,21 +60,20 @@ const SearchBar = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(`Searching for ${searchTerm}`);
-    // TODO: Add search functionality
+    // 검색 결과를 처리하고, 검색 결과 페이지로 이동합니다.
+    navigate(`/search-results?query=${encodeURIComponent(searchTerm)}`);
   };
 
   return (
     <SearchContainer>
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        <InputContainer>
+        <InputContainer maxWidth={maxWidth}>
           <SearchInput
             type="text"
             value={searchTerm}
             onChange={handleInputChange}
             placeholder="외대 주변 맛집을 찾아보세요 !"
           />
-          {/* Making the icon act as a submit button */}
           <SearchIcon onClick={handleSubmit} />
         </InputContainer>
       </form>

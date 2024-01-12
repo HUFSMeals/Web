@@ -6,6 +6,7 @@ import Notice from "../pages/notice";
 import Login from "../pages/login";
 import Shop from "../pages/shop";
 import SearchResult from "../pages/search/searchResult";
+import CreateReview from "../pages/review/createReview";
 
 const Router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const Router = createBrowserRouter([
   {
     path: "/searchResult",
     element: <SearchResult />,
+  },
+  {
+    path: "/createReview",
+    element: <CreateReview />,
   },
 ]);
 

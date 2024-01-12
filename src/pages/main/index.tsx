@@ -8,7 +8,7 @@ function Main() {
   return (
     <div>
       <Header/>
-      <SearchBar/>
+      <SearchBar maxWidth={'440px'} />
       <MapComponent />
       <Footer/>
     </div>
