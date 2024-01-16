@@ -33,6 +33,7 @@ const StyledHeader = styled.header<IHeader>`  // changed from button to header f
   justify-content: space-between;
   align-items: center;
   border-bottom: 0.5px solid ${theme.colors.Color_Gray_4};
+  z-index: 5;
 `;
 
 const LogoContainer = styled.div`
