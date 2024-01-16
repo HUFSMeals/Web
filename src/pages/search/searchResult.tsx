@@ -5,6 +5,7 @@ import Footer from "../../components/Footer";
 import { IcStarFull } from "../../assets/images/icons/stars"; // 별점 아이콘
 import SearchBar from "./serchBar";
 import { maxWidth } from "./serchBar";
+import { useNavigate } from 'react-router-dom';
 
 const SearchResultLogContainer = styled.div`
   display: flex;
@@ -180,6 +181,13 @@ const searchResults = [
     ];
 
 const SearchResult: React.FC = () => {
+  const navigate = useNavigate();
+
+  // 식당 클릭 핸들러
+  const handleRestaurantClick = () => {
+    navigate(`/shop`); // 각 식당의 고유 ID에 따라 경로를 설정
+  };
+
   return (
     <>
       <Header />
@@ -188,7 +196,7 @@ const SearchResult: React.FC = () => {
         <SearchResultList>
           <ResultTitle>검색 결과 ( {searchResults.length} )</ResultTitle>
           {searchResults.map((result) => (
-            <SearchResultItem key={result.id}>
+            <SearchResultItem key={result.id} onClick={() => handleRestaurantClick()}>
               <RestaurantImage src={result.restaurant_image} alt="Restaurant" />
               <RestaurantInfo>
                 <RestaurantName>{result.name}</RestaurantName>

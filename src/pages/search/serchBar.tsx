@@ -64,6 +64,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
     navigate(`/search-results?query=${encodeURIComponent(searchTerm)}`);
   };
 
+  const fakeSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // 검색 결과를 처리하고, 검색 결과 페이지로 이동합니다.
+    navigate(`/searchResult`);
+  };
+
   return (
     <SearchContainer>
       <form onSubmit={handleSubmit} style={{ width: '100%' }}>
@@ -74,7 +80,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
             onChange={handleInputChange}
             placeholder="외대 주변 맛집을 찾아보세요 !"
           />
-          <SearchIcon onClick={handleSubmit} />
+          <SearchIcon onClick={fakeSubmit} />
         </InputContainer>
       </form>
     </SearchContainer>
