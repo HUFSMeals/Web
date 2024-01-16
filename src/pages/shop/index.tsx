@@ -4,6 +4,9 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Carousel from "../../components/carousel/Carousel";
 import { RateStars } from "../review/rate";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Modal from "../../components/Modal";
 
 // 아이콘 경로 정의
 const booPath = 'src/assets/images/icons/IcBoo.svg';
@@ -92,14 +95,14 @@ const ReviewBody = styled.p`
   padding: 16px;
   margin: 0;
   color: #333;
+  font-size: 16px;
 `;
 
-// 새로운 스타일 컴포넌트 추가
 
 const InfoWithIcon = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 5px; // 다음 정보와의 간격
+  margin-bottom: 12px;
 `;
 
 const myReview ={
@@ -149,8 +152,8 @@ const myReview ={
 const ShopContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center; // 가게 정보를 중앙에 배치
-  margin-top: rem;
+  align-items: left;
+  gap: 0.5rem;
 `;
 
 const ShopImage = styled.img`
@@ -161,12 +164,14 @@ const ShopImage = styled.img`
 
 const ShopDetails = styled.section`
   padding: 1rem;
-  text-align: center; // 텍스트 중앙 정렬
+  text-align: left;
+  margin-left: 2rem;
 `;
 
 const ShopName = styled.h1`
-  font-size: 2rem;
+  font-size: 2.3rem;
   color: #333;
+  margin-right: 0.75rem;
 `;
 
 const ShopRating = styled.div`
@@ -184,9 +189,65 @@ const ShopInfo = styled.div`
 `;
 
 const ShopInfoItem = styled.p`
-  font-size: 1rem;
+  font-size: 1.4rem;
   color: #666;
 `;
+
+const ShopNameRating = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+
+const SignatureDishesContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+`;
+
+const DishCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+`;
+
+const DishName = styled.h3`
+  margin: 5px 0;
+`;
+
+const DishImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+  margin-bottom: 5px;
+
+`;
+
+const DishesContainer = styled.div`
+  width: 100%;
+`;
+
+const MenuText = styled.div`
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 5px;
+  margin-left: 5px;
+`;
+
+const dishes = [
+    { id: 1, name: '기린밥', imageUrl: 'https://source.unsplash.com/random/2' },
+    { id: 2, name: '기린라면', imageUrl: 'https://source.unsplash.com/random/1' },
+  ];
+  
+
 
 // 실제 데이터를 받아올 때는 이 부분을 API 호출로 대체합니다.
 const shopData = {
@@ -197,18 +258,46 @@ const shopData = {
   category: "술집",
   phone: "02-1111-1111",
   review_cnt: 10,
-  score_avg: 5,
+  score_avg: 4.6,
 };
 
 // 컴포넌트 정의
 const Shop: React.FC = () => {
+    const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+
+    const handleEditClick = () => {
+        navigate('/createReview');
+    };
+
+    const handleTrashClick = (event: React.MouseEvent<HTMLImageElement>) => {
+        const reviewId = Number(event.currentTarget.getAttribute('data-review-id'));
+        setSelectedReviewId(reviewId);
+        setIsModalOpen(true);
+    };
+    const handleDeleteConfirm = () => {
+        // Perform deletion here, maybe call an API
+        console.log(`Deleting review with ID: ${selectedReviewId}`);
+        setIsModalOpen(false);
+    };
+    const handleDeleteCancel = () => {
+        setIsModalOpen(false);
+        };
+        
     return (
         <>
           <Header />
           <ShopContainer>
             <ShopImage src={shopData.restaurant_image} alt="가게 대표 이미지" />
             <ShopDetails>
-              <ShopName>{shopData.name}</ShopName>
+                <ShopNameRating>
+                    <ShopName>{shopData.name}</ShopName>
+                    <ReviewRateDate>
+                        <RateStars score={shopData.score_avg} />
+                        <ReviewDate>ㆍ리뷰 {shopData.review_cnt}</ReviewDate>
+                    </ReviewRateDate>
+                </ShopNameRating>
               <ShopRating>
                 {/* 별점 렌더링 */}
               </ShopRating>
@@ -227,6 +316,17 @@ const Shop: React.FC = () => {
                 </InfoWithIcon>
               </ShopInfo>
             </ShopDetails>
+            <DishesContainer>
+                <MenuText>메뉴 {dishes.length}</MenuText>
+                <SignatureDishesContainer>
+                    {dishes.map((dish) => (
+                        <DishCard key={dish.id}>
+                        <DishImage src={dish.imageUrl} alt={dish.name} />
+                        <DishName>{dish.name}</DishName>
+                        </DishCard>
+                    ))}
+                </SignatureDishesContainer>
+            </DishesContainer>
           </ShopContainer>
           <ReviewContainer>
         <MyReviewText>Recent Reviews ({myReview.data.length})</MyReviewText>
@@ -244,8 +344,8 @@ const Shop: React.FC = () => {
               </ReviewInfo>
               <ReviewActions>
                 {/* IcEdit와 IcTrash 아이콘을 img 태그로 변경 */}
-                <img src={editPath} alt="Edit" style={{ width: "24px", height: "24px" }} />
-                <img src={trashPath} alt="Trash" style={{ width: "24px", height: "24px" }} />
+                <img src={editPath} alt="Edit" style={{ width: "24px", height: "24px" }} onClick={handleEditClick}/>
+                <img src={trashPath} alt="Trash" style={{ width: "24px", height: "24px" }} onClick={handleTrashClick} data-review-id={review.id}/>
               </ReviewActions>
             </ReviewHeader>
             <ReviewBody>{review.body}</ReviewBody>
@@ -254,6 +354,16 @@ const Shop: React.FC = () => {
         ))}
       </ReviewContainer>
       <Footer />
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleDeleteCancel}
+          title="리뷰 삭제하기"
+          text1="리뷰를 삭제 하시겠습니까?"
+          action="삭제"
+          onAction={handleDeleteConfirm}
+        />
+      )}
     </>
   );
 };
