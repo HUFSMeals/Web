@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { IcCamera } from '../../assets/images/icons';
+import { IcCamera } from '../../../public/assets/images/icons';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 
 
 // 별 아이콘의 경로를 정의합니다.
-const starFullPath = 'src/assets/images/icons/IcStarFull.svg';
-const starOffPath = 'src/assets/images/icons/IcStarOff.svg';
+const starFullPath = '/assets/images/icons/IcStarFull.svg';
+const starOffPath = '/assets/images/icons/IcStarOff.svg';
 
 // 스타일 컴포넌트 정의
 const ReviewContainer = styled.div`
@@ -92,6 +92,35 @@ const RestaurantName = styled.h2`
   color: #333;
 `;
 
+
+const PhotoUploadText = styled.h2`
+  font-size: 1.5rem;
+  color: #333;
+  margin-left: 0.8rem;
+`;
+
+const PhotoButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+`;
+
+const SelectedImageInfo = styled.div`
+  margin-bottom: 2.5rem;
+  font-size: 1.2rem; // 폰트 크기 조정
+  color: #666;
+  background: #f0f0f0; // 배경색 추가
+  border: 1px solid #ddd; // 테두리 추가
+  border-radius: 8px; // 테두리 둥글게
+  padding: 10px; // 패딩 추가
+  display: flex; // Flexbox로 설정
+  align-items: center; // 가로축 중앙 정렬
+  gap: 10px; // 아이콘과 텍스트 사이의 간격
+`;
+
+
+
 const Restaurant = [
     {
         id: 1,
@@ -111,6 +140,8 @@ const ReviewPage = () => {
   const [title, setTitle] = useState<string>('');
   const [reviewText, setReviewText] = useState<string>('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [selectedImageName, setSelectedImageName] = useState('');
+
   
   // 별점 처리 함수
   const handleRating = (rate: number) => {
@@ -127,18 +158,20 @@ const ReviewPage = () => {
     setReviewText(e.target.value);
   };
 
-   // 이미지 선택 처리 함수
-   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedImage(e.target.files[0]);
-    }
-  };
   const handlePhotoButtonClick = () => {
     const uploadButton = document.getElementById('photo-upload');
     if (uploadButton) {
       uploadButton.click();
     }
   };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImage(e.target.files[0]);
+      setSelectedImageName(e.target.files[0].name); // 파일 이름을 상태 변수에 저장
+    }
+  };
+
   // 식당 데이터가 존재하는지 확인
   const restaurant = Restaurant.length > 0 ? Restaurant[0] : null;
 
@@ -199,8 +232,16 @@ const ReviewPage = () => {
             id="photo-upload"
         />
         <PhotoUploadButton onClick={handlePhotoButtonClick}>
-            <IcCamera /> 사진 첨부하기
+            <PhotoButtonContainer>
+                <IcCamera />
+                <PhotoUploadText>
+                    사진 첨부하기
+                </PhotoUploadText>
+            </PhotoButtonContainer>
         </PhotoUploadButton>
+        {selectedImageName && (
+        <SelectedImageInfo>선택된 파일: {selectedImageName}</SelectedImageInfo>
+        )}
         <TitleInput
             type="text"
             placeholder="제목"
