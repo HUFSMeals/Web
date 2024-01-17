@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TransLeftOn,TransRightOn } from '../../assets/images/icons';
+import { TransLeftOn,TransRightOn } from '../../../public/assets/images/icons';
 export const Container = styled.div`
     position: relative;
     width: 100%;
