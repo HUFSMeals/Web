@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { IcGoogleLogin, IcHUFSMEALS } from "../../assets/images/icons";
+import { IcGoogleLogin, IcHUFSMEALS } from "../../../public/assets/images/icons";
 
 const NoticeLogContainer = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     const handleGoogleLogin = () => {
       // 백엔드에서 제공하는 구글 로그인 URL로 리다이렉트합니다.
       // 예시 URL은 실제 백엔드에서 제공하는 엔드포인트로 대체해야 합니다.
-      const googleLoginUrl = "http://yourbackenddomain.com/auth/google";
+      const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth";
       window.location.href = googleLoginUrl;
     };
         return (
@@ -47,7 +47,6 @@ const Login: React.FC = () => {
               <SloganText>Meals for HUFS</SloganText>
             </SloganContainer>
             <GoogleLoginContainer>
-              {/* SVG 아이콘을 클릭 가능한 버튼으로 만듭니다. */}
               <button onClick={handleGoogleLogin} style={{ background: 'none', border: 'none' }}>
                 <IcGoogleLogin />
               </button>
