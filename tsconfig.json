@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/pages/review/.tsx"],
+  "include": ["src", "src/pages/review/.tsx", "public/assets"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
