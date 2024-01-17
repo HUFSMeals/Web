@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { theme } from "../styles/theme";
-import { LogoHeader } from "../assets/images/logo";
+import { LogoHeader } from "../../public/assets/images/logo";
 
 interface IHeader {
   width?: string;
