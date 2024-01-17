@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { IcBoo,IcEdit,IcTrash,IcKorean } from "../../assets/images/icons";
+import { IcBoo,IcEdit,IcTrash,IcKorean } from "../../../public/assets/images/icons";
 //import { Link } from "react-router-dom";
 import Carousel from "../../components/carousel/Carousel";
 import { RateStars } from "../review/rate";
