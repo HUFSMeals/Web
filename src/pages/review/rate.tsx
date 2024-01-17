@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 // 별 아이콘의 경로를 정의합니다.
-const starFullPath = 'src/assets/images/icons/IcStarFull.svg';
-const starHalfPath = 'src/assets/images/icons/IcStarHalf.svg';
-const starOffPath = 'src/assets/images/icons/IcStarOff.svg';
+const starFullPath = '/assets/images/icons/IcStarFull.svg';
+const starHalfPath = '/assets/images/icons/IcStarHalf.svg';
+const starOffPath = '/assets/images/icons/IcStarOff.svg';
 
 interface StarsProps {
   score: number;

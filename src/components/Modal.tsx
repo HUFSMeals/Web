@@ -62,8 +62,8 @@ const ModalContent = styled.div`
   background-color: white;
   padding: 30px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  width: 90%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 40%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +99,7 @@ const Modal: React.FC<ModalProps> = ({
       {isOpen && (
         <ModalOverlay>
           <ModalContent>
-            {imageUrl && <ModalImage src={imageUrl} alt={title} />} // 변경된 스타일 적용
+            {imageUrl && <ModalImage src={imageUrl} alt={title} />}
             <ModalTitle>{title}</ModalTitle>
             <ModalBody>{text1}</ModalBody>
             {text2 && <ModalBody>{text2}</ModalBody>}

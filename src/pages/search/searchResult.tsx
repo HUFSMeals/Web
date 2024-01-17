@@ -1,10 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
+import { useNavigate, useLocation } from 'react-router-dom';
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { IcStarFull } from "../../assets/images/icons/stars"; // 별점 아이콘
+import { IcStarFull } from "../../../public/assets/images/icons/stars"; // 별점 아이콘
 import SearchBar from "./serchBar";
 import { maxWidth } from "./serchBar";
+
+// 검색 결과 타입 정의
+interface SearchResult {
+    id: number;
+    restaurant_image: string;
+    name: string;
+    score_avg: number;
+    review_cnt: number;
+    address: string;
+    category: string;
+  }
 
 const SearchResultLogContainer = styled.div`
   display: flex;
@@ -15,9 +27,12 @@ const SearchResultLogContainer = styled.div`
   max-width: ${maxWidth};
 `;
 
-const ResultTitle = styled.div`
+const ResultNum = styled.div`
   font-size: 18px;
   font-weight: bold;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-left: 8px;
 `;
 
 const SearchResultList = styled.div`
@@ -65,138 +80,65 @@ const RatingText = styled.span`
   font-size: 1rem;
   color: #666;
   margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
 `;
 
-// 임시 데이터
-const searchResults = [
-    {
-        id: 1,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 2,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-      {
-        id: 3,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 4,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-      {
-        id: 5,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 6,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-      {
-        id: 7,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 8,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-      {
-        id: 9,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 10,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-      {
-        id: 11,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
-        score_avg: 4.3,
-        review_cnt: 120,
-        address: "서울시 동대문구 이문로 11길 11",
-        category: "한식"
-      },
-      {
-        id: 12,
-        restaurant_image: "https://source.unsplash.com/random/restaurant2",
-        name: "즐거운 식당",
-        score_avg: 4.8,
-        review_cnt: 88,
-        address: "서울시 관악구 신림동",
-        category: "중식"
-      },
-    ];
 
-const SearchResult: React.FC = () => {
+const RestaurantAddress = styled.span`
+  font-size: 1rem;
+  color: #666;
+  margin-left: 0.5rem;
+  margin-top: 0.1rem;
+`;
+
+    const SearchResult: React.FC = () => {
+        const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+        const navigate = useNavigate();
+        const location = useLocation();
+        const query = new URLSearchParams(location.search).get('query');
+      
+        // 검색 결과 불러오기
+        useEffect(() => {
+          const fetchSearchResults = async () => {
+            if (query) {
+              try {
+                const response = await fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/search/${query}/`);
+                const data = await response.json();
+                if (data.msg === "식당 이름으로 검색 성공") {
+                  setSearchResults(data.data);
+                }
+              } catch (error) {
+                console.error("Error fetching search results:", error);
+              }
+            }
+          };
+      
+          fetchSearchResults();
+        }, [query]);
+      
+        // 식당 클릭 핸들러
+        const handleRestaurantClick = (id: number) => {
+          navigate(`/shop/${id}`); // 각 식당의 고유 ID로 경로 설정
+        };
+
+
   return (
     <>
       <Header />
       <SearchResultLogContainer>
-        <SearchBar maxWidth={maxWidth} />
+      <SearchBar maxWidth={maxWidth} placeholder={query || "검색어 입력하기"} /> {/* 검색 결과 페이지에서의 placeholder 설정 */}
         <SearchResultList>
-          <ResultTitle>검색 결과 ( {searchResults.length} )</ResultTitle>
+          <ResultNum>검색 결과 {searchResults.length} </ResultNum>
           {searchResults.map((result) => (
-            <SearchResultItem key={result.id}>
-              <RestaurantImage src={result.restaurant_image} alt="Restaurant" />
+        <SearchResultItem key={result.id} onClick={() => handleRestaurantClick(result.id)}>
+        <RestaurantImage src={result.restaurant_image} alt="Restaurant" />
               <RestaurantInfo>
                 <RestaurantName>{result.name}</RestaurantName>
                 <RestaurantRating>
                   <IcStarFull /> {/* 별점 아이콘 */}
                   <RatingText>{result.score_avg} · 리뷰 {result.review_cnt}</RatingText>
                 </RestaurantRating>
-                <p>{result.address}</p> {/* 주소 */}
+                <RestaurantAddress>{result.address}</RestaurantAddress>
               </RestaurantInfo>
             </SearchResultItem>
           ))}

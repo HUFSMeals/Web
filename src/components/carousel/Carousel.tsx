@@ -4,7 +4,7 @@ import {
     PopModal,
     Chevron_Right,
     Chevron_Left,
-} from '../../assets/images/icons';
+} from '../../../public/assets/images/icons';
 import CarouselModal from './CarouselModal';
 import useInnerWidth from '../../utils/hooks/useInnerWidth';
 

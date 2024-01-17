@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 import
-import { IcSearch } from '../../assets/images/icons';
+import { useNavigate, NavigateFunction } from 'react-router-dom'; // useNavigate 훅 import
+import { IcSearch } from '../../../public/assets/images/icons';
 
 export const maxWidth = '43rem';
 
@@ -41,18 +41,31 @@ const SearchIcon = styled(IcSearch)`
   height: 20px;
 `;
 
-// SearchBar 컴포넌트의 props 타입을 정의합니다.
 interface SearchBarProps {
   maxWidth: string;
+  placeholder?: string;
 }
 
-interface SearchBarProps {
-  maxWidth: string;
-}
+const navigateToSearchResults = (navigate: NavigateFunction, query: string) => {
+  // 실제 검색 API를 호출
+  fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/search/${query}/`)
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.msg === "식당 이름으로 검색 성공") {
+        // 검색 결과 데이터를 검색 결과 페이지 컴포넌트로 전달
+        navigate(`/searchResult?query=${encodeURIComponent(query)}`);
+      } else {
+        console.error('Search failed:', data.msg);
+      }
+    })
+    .catch((error) => {
+      console.error('Error searching:', error);
+    });
+};
 
-const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ maxWidth, placeholder }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -60,8 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // 검색 결과를 처리하고, 검색 결과 페이지로 이동합니다.
-    navigate(`/search-results?query=${encodeURIComponent(searchTerm)}`);
+    navigateToSearchResults(navigate, searchTerm);
   };
 
   return (
@@ -72,9 +84,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ maxWidth }) => {
             type="text"
             value={searchTerm}
             onChange={handleInputChange}
-            placeholder="외대 주변 맛집을 찾아보세요 !"
+            placeholder={placeholder || "외대 주변 맛집을 찾아보세요 !"}
           />
-          <SearchIcon onClick={handleSubmit} />
+          <SearchIcon onClick={() => navigateToSearchResults(navigate, searchTerm)} />
         </InputContainer>
       </form>
     </SearchContainer>

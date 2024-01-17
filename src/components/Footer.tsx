@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { theme } from "../styles/theme";
-import { IcMap, IcMypage, IcNotice } from "../assets/images/icons";
+import { IcMap, IcMypage, IcNotice } from "../../public/assets/images/icons";
 import { Link } from "react-router-dom";
 interface IFooter {
   width?: string;
@@ -33,7 +33,7 @@ const StyledFooter = styled.footer<IFooter>`  // Assuming footer makes more sema
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   border-top: 2px solid ${theme.colors.Color_Gray_4};
-  z-index: 1000;  // Ensure it stays on top if needed
+  z-index: 5;
 
   :disabled {
     background-color: ${theme.colors.Color_Orange.heavy};

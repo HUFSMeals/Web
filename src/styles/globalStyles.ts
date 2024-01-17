@@ -138,10 +138,20 @@ export const reset = css`
   }
 `;
 
+const nanumSquareNeo = css`
+  @font-face {
+    font-family: 'NanumSquareNeo';
+    src: url('/assets/fonts/NanumSquareNeo-Variable.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+  }
+`;
 export const GlobalStyle = createGlobalStyle`
 ${reset}
-.notosanskr * { 
- font-family: 'Noto Sans KR';
+${nanumSquareNeo}
+
+body, button, input, textarea {
+  font-family: 'NanumSquareNeo';
 }
 
 #root, body, html {

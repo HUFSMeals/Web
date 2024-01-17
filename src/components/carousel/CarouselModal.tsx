@@ -9,7 +9,7 @@ import {
     Close,
     TransLeftOn,
     TransRightOn,
-} from '../../assets/images/icons';
+} from '../../../public/assets/images/icons';
 import useInnerWidth from '../../utils/hooks/useInnerWidth';
 
 Modal.setAppElement('#root');

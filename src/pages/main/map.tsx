@@ -1,62 +1,94 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import useGeolocation from './useGeolocation';
 import useKakaoLoader from './useKakaoLoader';
 import { styled } from 'styled-components';
-import { PicBoo, PicKorean, PicSoju, PicBoonsik } from '../../assets/images/icons';
+import { PicBoo, PicKorean, PicAlchohol, PicSchoolFood, PicCafe, PicChinese, PicFastFood, PicJapanese, PicMeat, PicWestern, PicWorldFood } from '../../../public/assets/images/icons';
+import ShopModal from '../../components/ShopModal';
+import { useNavigate } from 'react-router-dom';
 
 const StyledMap = styled.div`
   height: calc(100vh - 70px - 40px);
   margin-top: 15px;
 `;
+interface Shop {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  category: string;
+  address: string;
+  phone: string;
+  review_cnt: number;
+  score_avg: number;
+  opening_hours: string; // 선택적 속성으로 추가
+}
 
-const MapComponent = () => {
-  const placeData = [
-    {
-    name: "기린포차",
-    latitude: 37.656826, // 숫자형태의 위도
-    longitude: 127.0786567, // 숫자형태의 경도
-    opening_hours: "17:00",
-    address: "서울시 동대문구 이문로 11길 11",
-    category: "술집",
-    phone: "02-1111-1111",
-    review_cnt: "10",
-    score_avg: "5",
-    statusCode: 200
-  },
-  {
-    name: "1988",
-    latitude: 37.656826, // 숫자형태의 위도
-    longitude: 127.0796567, // 숫자형태의 경도
-    opening_hours: "17:00",
-    address: "서울시 동대문구 이문로 11길 11",
-    category: "한식",
-    phone: "02-1111-1111",
-    review_cnt: "10",
-    score_avg: "5",
-    statusCode: 200
-  },
-  {
-    name: "이떡집",
-    latitude: 37.657426, // 숫자형태의 위도
-    longitude: 127.0796567, // 숫자형태의 경도
-    opening_hours: "17:00",
-    address: "서울시 동대문구 이문로 11길 11",
-    category: "분식",
-    phone: "02-1111-1111",
-    review_cnt: "10",
-    score_avg: "5",
-    statusCode: 200
-  }
-];
+const MapComponent: React.FC = () => {
+  const navigate = useNavigate();
+  const [selectedShop, setSelectedShop] = useState<Shop | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [placeData, setPlaceData] = useState<Shop[]>([]);
+
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const response = await fetch('https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/location/');
+        const data = await response.json();
+        if (data.msg === "식당 위/경도 반환 성공") {
+          setPlaceData(data.data.map((shop: Shop) => ({
+            ...shop,
+            latitude: shop.latitude,
+            longitude: shop.longitude
+          })));
+        }
+      } catch (error) {
+        console.error("Error fetching shops:", error);
+      }
+    };
+  
+    fetchShops();
+  }, []);
+  
+  // This function is called when a MapMarker is clicked
+  const handleMarkerClick = (shop : Shop) => {
+    setSelectedShop(shop); // Set the selected shop
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const handleShopDetail = () => {
+    if (selectedShop && selectedShop.id) {
+      navigate(`/shop/${selectedShop.id}`); // 선택된 상점의 ID를 경로에 포함
+    }
+    setIsModalOpen(false);
+  };
+  
+const handleModalCancel = () => {
+  setIsModalOpen(false);
+  };
+
 const getIconForCategory = (category : string) => {
   switch (category) {
-    case "분식":
-      return PicBoonsik;
-    case "술집":
-      return PicSoju;
-    case "한식":
+    case "SchoolFood":
+      return PicSchoolFood;
+    case "Alchohol":
+      return PicAlchohol;
+    case "Korean":
       return PicKorean;
+    case "Cafe":
+      return PicCafe;
+    case "Chinese":
+      return PicChinese;
+    case "FastFood":
+      return PicFastFood;
+    case "Japanese":
+      return PicJapanese;
+    case "Meat":
+      return PicMeat;
+    case "Western":
+      return PicWestern;
+    case "WorldFood":
+      return PicWorldFood;
     default:
       return PicBoo; // 기본 아이콘
   }
@@ -68,7 +100,6 @@ const getIconForCategory = (category : string) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-
   return (
     <StyledMap>
       <Map center={position} style={{ width: "100%", height: "100%" }} level={3}>
@@ -80,11 +111,21 @@ const getIconForCategory = (category : string) => {
           <MapMarker
             key={index}
             position={{ lat: place.latitude, lng: place.longitude }}
+            onClick={() => handleMarkerClick(place)}
             title={place.name}
             image={{ src: getIconForCategory(place.category), size: { width: 36, height: 36 } }}
           />
         ))}
       </Map>
+      {isModalOpen && selectedShop && (
+        <ShopModal
+          isOpen={isModalOpen}
+          onClose={handleModalCancel}
+          action="자세히 보기"
+          onAction={handleShopDetail}
+          shop={selectedShop}
+        />
+      )}
     </StyledMap>
   );
 };
