@@ -1,20 +1,66 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Carousel from "../../components/carousel/Carousel";
 import { RateStars } from "../review/rate";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "../../components/Modal";
+import { useParams } from 'react-router-dom';
+
+
+
+interface IntegratedShopDetails {
+    id: number;
+    name: string;
+    restaurant_image: string;
+    opening_hours: string;
+    address: string;
+    category: string;
+    phone: string;
+    review_cnt: number;
+    score_avg: number;
+    review: Review[];
+    menu: Menu[];
+  }
+  
+  // 메뉴 인터페이스 정의
+  interface Menu {
+    id: number;
+    name: string;
+    menu_image: string;
+  }
+  
+  // 리뷰 인터페이스 정의
+  interface Review {
+    id: number;
+    image: ReviewImage[];
+    user: {
+      id: number;
+      nickname: string;
+      language: string;
+    };
+    title: string;
+    body: string;
+    src_lang: string;
+    created_at: string;
+    score: number;
+  }
+  
+  // 리뷰 이미지 인터페이스 정의
+  interface ReviewImage {
+    id: number;
+    review_image: string;
+  }
+  
 
 // 아이콘 경로 정의
-const booPath = 'src/assets/images/icons/IcBoo.svg';
-const editPath = 'src/assets/images/icons/IcEdit.svg';
-const trashPath = 'src/assets/images/icons/IcTrash.svg';
-const timePath = 'src/assets/images/icons/IcTime.svg';
-const callPath = 'src/assets/images/icons/IcCall.svg';
-const locationPath = 'src/assets/images/icons/IcLocation.svg';
+const booPath = '/assets/images/icons/IcBoo.svg';
+const editPath = '/assets/images/icons/IcEdit.svg';
+const trashPath = '/assets/images/icons/IcTrash.svg';
+const timePath = '/assets/images/icons/IcTime.svg';
+const callPath = '/assets/images/icons/IcCall.svg';
+const locationPath = '/assets/images/icons/IcLocation.svg';
 
 // 아이콘 스타일 컴포넌트
 const Icon = styled.img`
@@ -36,11 +82,12 @@ const ReviewCard = styled.div`
 
 const MyReviewText = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
-  font-size: 16px;
+  font-size: 19px;
+  font-weight: bold;
   padding: 10px;
-  margin-top: 5px;
+  margin: 5px;
 `;
 
 const ReviewContainer = styled.div`
@@ -51,6 +98,7 @@ const ReviewContainer = styled.div`
   padding-left: 5%; // 컨테이너의 양쪽에 여백을 줍니다.
   padding-right: 5%;
   box-sizing: border-box;
+  padding-top: 10px;
 `;
 
 
@@ -74,6 +122,28 @@ const ReviewRateDate = styled.div`
 
 `;
 
+const ReviewNumCreate = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+`;
+
+const CreateReviewButton = styled.button`
+  padding: 6px 10px;
+  background-color: #8ADAF8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer; // 마우스 오버 시 커서 변경
+  font-size: 16px;
+  transition: background-color 0.2s; // 배경색 변경 애니메이션
+
+  &:hover {
+    background-color: #1ADAF8; // 호버 시 배경색 변경
+  }
+`;
+
 const ReviewTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
@@ -92,10 +162,11 @@ const ReviewActions = styled.div`
   gap: 1rem;
 `;
 const ReviewBody = styled.p`
-  padding: 16px;
+  padding: 18px;
   margin: 0;
   color: #333;
   font-size: 16px;
+  line-height: 1.5;
 `;
 
 
@@ -104,49 +175,6 @@ const InfoWithIcon = styled.div`
   align-items: center;
   margin-bottom: 12px;
 `;
-
-const myReview ={
-	"msg" : "유저의 모든 리뷰 불러오기 성공",
-	"data" : [
-		{
-			"id" : 1, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "어쩌고",
-			"body" : "123", // 리뷰 본문
-			"created_at" : "2024-01-03",
-			"score" : 4.5, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&2"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&1"
-				},
-			]
-		},
-    {
-			"id" : 2, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "저쩌고",
-			"body" : "456", // 리뷰 본문
-			"created_at" : "2024-01-01",
-			"score" : 4, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&3"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&4"
-				},
-			]
-		}
-	]
-}
-
 
 // 스타일 컴포넌트 정의
 const ShopContainer = styled.div`
@@ -217,7 +245,8 @@ const DishCard = styled.div`
 `;
 
 const DishName = styled.h3`
-  margin: 5px 0;
+  margin: 5px;
+  font-size: 15px;
 `;
 
 const DishImage = styled.img`
@@ -236,66 +265,81 @@ const MenuText = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
-  font-size: 16px;
+  font-size: 18px;
   padding: 10px;
   margin-top: 5px;
   margin-left: 5px;
 `;
 
-const dishes = [
-    { id: 1, name: '기린밥', imageUrl: 'https://source.unsplash.com/random/2' },
-    { id: 2, name: '기린라면', imageUrl: 'https://source.unsplash.com/random/1' },
-  ];
-  
 
 
-// 실제 데이터를 받아올 때는 이 부분을 API 호출로 대체합니다.
-const shopData = {
-  name: "기린포차",
-  restaurant_image: "https://source.unsplash.com/random/?Cryptocurrency&3",
-  opening_hours: "17:00",
-  address: "서울시 동대문구 이문로 11길 11",
-  category: "술집",
-  phone: "02-1111-1111",
-  review_cnt: 10,
-  score_avg: 4.6,
-};
-
-// 컴포넌트 정의
 const Shop: React.FC = () => {
-    const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const [integratedShopDetails, setIntegratedShopDetails] = useState<IntegratedShopDetails | null>(null);
 
-    const handleEditClick = () => {
-        navigate('/createReview');
-    };
+  // API 호출을 위한 상점 ID (예시로 1 사용, 실제 구현에서는 동적으로 변경)
+  const { id: shopId } = useParams();
 
-    const handleTrashClick = (event: React.MouseEvent<HTMLImageElement>) => {
-        const reviewId = Number(event.currentTarget.getAttribute('data-review-id'));
-        setSelectedReviewId(reviewId);
-        setIsModalOpen(true);
-    };
-    const handleDeleteConfirm = () => {
-        // Perform deletion here, maybe call an API
-        console.log(`Deleting review with ID: ${selectedReviewId}`);
-        setIsModalOpen(false);
-    };
-    const handleDeleteCancel = () => {
-        setIsModalOpen(false);
-        };
-        
+  useEffect(() => {
+    if (shopId) {
+      const fetchIntegratedShopDetails = async () => {
+        try {
+          // 헤더 설정
+          const headers = new Headers({
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2ODA5MzU1LCJpYXQiOjE3MDU1MTMzNTUsImp0aSI6Ijc3OGE5OTg0ZjI4NjQyM2JiNWUyMGE3MjU5ZmE2NGYwIiwidXNlcl9pZCI6MX0.OExlMIcEj5pQKI3eGBXynZOSFwtqUheiaafIor8QqCM'
+          });
+  
+          const response = await fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/detail/integ/${shopId}/`, { headers });
+          const data = await response.json();
+          if (data.msg === "식당 세부정보 불러오기 성공") {
+            setIntegratedShopDetails(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching integrated shop details:", error);
+        }
+      };
+  
+      fetchIntegratedShopDetails();
+    }
+  }, [shopId]);
+  
+  const handleEditClick = () => {
+    navigate('/createReview');
+  };
+  
+  const handleTrashClick = (event: React.MouseEvent<HTMLImageElement>) => {
+    const reviewId = Number(event.currentTarget.getAttribute('data-review-id'));
+    setSelectedReviewId(reviewId);
+    setIsModalOpen(true);
+  };
+  
+  const handleDeleteConfirm = () => {
+    // Perform deletion here, maybe call an API
+    console.log(`Deleting review with ID: ${selectedReviewId}`);
+    setIsModalOpen(false);
+  };
+  
+  const handleDeleteCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  if (!integratedShopDetails) {
+    return <div>Loading...</div>;
+  }
     return (
         <>
           <Header />
+          {integratedShopDetails && (
           <ShopContainer>
-            <ShopImage src={shopData.restaurant_image} alt="가게 대표 이미지" />
+            <ShopImage src={integratedShopDetails.restaurant_image} alt="가게 대표 이미지" />
             <ShopDetails>
                 <ShopNameRating>
-                    <ShopName>{shopData.name}</ShopName>
+                    <ShopName>{integratedShopDetails.name}</ShopName>
                     <ReviewRateDate>
-                        <RateStars score={shopData.score_avg} />
-                        <ReviewDate>ㆍ리뷰 {shopData.review_cnt}</ReviewDate>
+                        <RateStars score={integratedShopDetails.score_avg} />
+                        <ReviewDate>ㆍ리뷰 {integratedShopDetails.review_cnt}</ReviewDate>
                     </ReviewRateDate>
                 </ShopNameRating>
               <ShopRating>
@@ -304,33 +348,40 @@ const Shop: React.FC = () => {
               <ShopInfo>
                 <InfoWithIcon>
                   <Icon src={locationPath} alt="Location" />
-                  <ShopInfoItem>{shopData.address}</ShopInfoItem>
+                  <ShopInfoItem>{integratedShopDetails.address}</ShopInfoItem>
                 </InfoWithIcon>
                 <InfoWithIcon>
                   <Icon src={callPath} alt="Call" />
-                  <ShopInfoItem>{shopData.phone}</ShopInfoItem>
+                  <ShopInfoItem>{integratedShopDetails.phone}</ShopInfoItem>
                 </InfoWithIcon>
                 <InfoWithIcon>
                   <Icon src={timePath} alt="Time" />
-                  <ShopInfoItem>{shopData.opening_hours}</ShopInfoItem>
+                  <ShopInfoItem>{integratedShopDetails.opening_hours}</ShopInfoItem>
                 </InfoWithIcon>
               </ShopInfo>
             </ShopDetails>
             <DishesContainer>
-                <MenuText>메뉴 {dishes.length}</MenuText>
-                <SignatureDishesContainer>
-                    {dishes.map((dish) => (
-                        <DishCard key={dish.id}>
-                        <DishImage src={dish.imageUrl} alt={dish.name} />
-                        <DishName>{dish.name}</DishName>
-                        </DishCard>
-                    ))}
-                </SignatureDishesContainer>
+              <MenuText>메뉴 {integratedShopDetails.menu.length}</MenuText>
+              <SignatureDishesContainer>
+                {integratedShopDetails.menu.map((dish) => (
+                  <DishCard key={dish.id}>
+                    <DishImage src={dish.menu_image} alt={dish.name} />
+                    <DishName>{dish.name}</DishName>
+                  </DishCard>
+                ))}
+              </SignatureDishesContainer>
             </DishesContainer>
           </ShopContainer>
+          )}
           <ReviewContainer>
-        <MyReviewText>Recent Reviews ({myReview.data.length})</MyReviewText>
-        {myReview.data.map((review) => (
+            <ReviewNumCreate>
+              <MyReviewText>최근 리뷰 {integratedShopDetails.review.length}개</MyReviewText>
+              <CreateReviewButton onClick={() => navigate('/createReview')}>
+                리뷰 작성하기
+              </CreateReviewButton>
+
+            </ReviewNumCreate>
+            {integratedShopDetails.review.map((review) => (
           <ReviewCard key={review.id}>
             <ReviewHeader>
               {/* IcBoo 아이콘을 img 태그로 변경 */}
