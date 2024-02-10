@@ -33,7 +33,7 @@ const MapComponent: React.FC = () => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await fetch('https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/location/');
+        const response = await fetch('https://hufsmeals.shop/restaurant/location/');
         const data = await response.json();
         if (data.msg === "식당 위/경도 반환 성공") {
           setPlaceData(data.data.map((shop: Shop) => ({
