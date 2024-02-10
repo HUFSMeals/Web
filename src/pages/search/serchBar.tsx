@@ -48,7 +48,7 @@ interface SearchBarProps {
 
 const navigateToSearchResults = (navigate: NavigateFunction, query: string) => {
   // 실제 검색 API를 호출
-  fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/search/${query}/`)
+  fetch(`https://hufsmeals.shop/restaurant/search/${query}/`)
     .then((response) => response.json())
     .then((data) => {
       if (data.msg === "식당 이름으로 검색 성공") {

@@ -124,8 +124,8 @@ const SelectedImageInfo = styled.div`
 const Restaurant = [
     {
         id: 1,
-        restaurant_image: "https://source.unsplash.com/random/restaurant1",
-        name: "맛있는 식당",
+        restaurant_image: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20230712_199%2F1689146141044d1qBe_JPEG%2F20220924_203119.jpg",
+        name: "마루기",
         score_avg: 4.3,
         review_cnt: 120,
         address: "서울시 동대문구 이문로 11길 11",

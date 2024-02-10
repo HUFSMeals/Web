@@ -102,7 +102,7 @@ const RestaurantAddress = styled.span`
           const fetchSearchResults = async () => {
             if (query) {
               try {
-                const response = await fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/search/${query}/`);
+                const response = await fetch(`https://hufsmeals.shop/restaurant/search/${query}/`);
                 const data = await response.json();
                 if (data.msg === "식당 이름으로 검색 성공") {
                   setSearchResults(data.data);

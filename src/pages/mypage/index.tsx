@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -106,75 +106,40 @@ const myReview ={
 		{
 			"id" : 1, // 리뷰 id
 			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "어쩌고",
-			"body" : "123", // 리뷰 본문
+			"title" : "투썸플레이스 외대점",
+			"body" : "코히 한사바리 굿 ~.~", // 리뷰 본문
 			"created_at" : "2024-01-03",
 			"score" : 4.5, // 평점
 			"image" : [
 				{
 					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&2"
+					"review_image" : "https://source.unsplash.com/random/?Coffee&6"
 				},
 				{
 					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&1"
+					"review_image" : "https://source.unsplash.com/random/?Coffee&2"
 				},
 			]
 		},
     {
 			"id" : 2, // 리뷰 id
 			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "저쩌고",
-			"body" : "456", // 리뷰 본문
+			"title" : "1988",
+			"body" : "N번째 멋사 회식.. 망고빙수와 치킨오꼬노미야끼 굿 ..", // 리뷰 본문
 			"created_at" : "2024-01-01",
 			"score" : 4, // 평점
 			"image" : [
 				{
 					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&3"
+					"review_image" : "https://source.unsplash.com/random/?Cocktail&3"
 				},
 				{
 					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&4"
+					"review_image" : "https://source.unsplash.com/random/?Cocktail&5"
 				},
 			]
 		},
-    {
-			"id" : 3, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "어쩌고",
-			"body" : "123", // 리뷰 본문
-			"created_at" : "2024-01-03",
-			"score" : 4.5, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&2"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&1"
-				},
-			]
-		},
-    {
-			"id" : 4, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "저쩌고",
-			"body" : "456", // 리뷰 본문
-			"created_at" : "2024-01-01",
-			"score" : 4, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&3"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cryptocurrency&4"
-				},
-			]
-		}
+    
 	]
 }
 
@@ -182,6 +147,20 @@ const MyPage = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const [username, setUsername] = useState<string>('');
+
+  console.log(localStorage.getItem('accessToken')); // 접근 토큰 출력
+  console.log(localStorage.getItem('userInfo')); // 사용자 정보 출력
+  useEffect(() => {
+    // 로컬 스토리지에서 'user_info'라는 키로 저장된 데이터 불러오기
+    const storedUserInfo = localStorage.getItem('user_info');
+    if (storedUserInfo) {
+      const userInfo = JSON.parse(storedUserInfo);
+      setUsername(userInfo.nickname); // 닉네임 설정
+    } else {
+      console.log('No user info found in localStorage');
+    }
+  }, []);
 
   const handleEditClick = () => {
     navigate('/createReview');
@@ -209,7 +188,7 @@ const MyPage = () => {
       <ProfileImageContainer>
         <IcBoo style={{ width: "100px", height: "100px" }} />
       </ProfileImageContainer>
-      <UserName>김멋사</UserName>
+      <UserName>{username || '영준'}</UserName>
       <ReviewContainer>
         <MyReviewText>My Reviews ( {myReview.data.length} )</MyReviewText>
         {myReview.data.map((review) => (
