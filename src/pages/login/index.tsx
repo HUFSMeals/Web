@@ -32,28 +32,63 @@ const SloganText = styled.div`
   margin-top: 10px;
 `;
 
+
+// const Login: React.FC = () => {
+//   const handleGoogleLogin = async () => {
+//     try {
+//       // 백엔드에서 제공하는 구글 로그인 URL을 받아옵니다.
+//       const response = await fetch('https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/accounts/signin/');
+//       const data = await response.json();
+//       // 백엔드에서 제공한 URL로 리다이렉트합니다.
+//       if (data && data.data) {
+//         window.location.href = data.data;
+//       }
+//     } catch (error) {
+//       console.error('Error during Google login:', error);
+//     }
+//   };
+
+//   return (
+//     <NoticeLogContainer>
+//       <Header />
+//       <SloganContainer>
+//         <IcHUFSMEALS />
+//         <SloganText>Meals for HUFS</SloganText>
+//       </SloganContainer>
+//       <GoogleLoginContainer>
+//         <button onClick={handleGoogleLogin} style={{ background: 'none', border: 'none' }}>
+//           <IcGoogleLogin />
+//         </button>
+//       </GoogleLoginContainer>
+//       <Footer />
+//     </NoticeLogContainer>
+//   );
+// };
+
+// export default Login;
+
 const Login: React.FC = () => {
-    const handleGoogleLogin = () => {
-      // 백엔드에서 제공하는 구글 로그인 URL로 리다이렉트합니다.
-      // 예시 URL은 실제 백엔드에서 제공하는 엔드포인트로 대체해야 합니다.
-      const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-      window.location.href = googleLoginUrl;
-    };
-        return (
-          <NoticeLogContainer>
-            <Header />
-            <SloganContainer>
-              <IcHUFSMEALS />
-              <SloganText>Meals for HUFS</SloganText>
-            </SloganContainer>
-            <GoogleLoginContainer>
-              <button onClick={handleGoogleLogin} style={{ background: 'none', border: 'none' }}>
-                <IcGoogleLogin />
-              </button>
-            </GoogleLoginContainer>
-            <Footer />
-          </NoticeLogContainer>
-        );
-      };
-      
-      export default Login;
+  const handleGoogleLogin = () => {
+    // 구글 로그인 페이지로 리다이렉트합니다.
+    const googleLoginUrl = "https://accounts.google.com/o/oauth2/v2/auth?client_id=694730838559-u7slukjsulo3h4r0qhjln4ah8lnjmftt.apps.googleusercontent.com&response_type=code&redirect_uri=http://localhost:5173/loginLoading&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
+    window.location.href = googleLoginUrl;
+  };
+
+  return (
+    <NoticeLogContainer>
+      <Header />
+      <SloganContainer>
+        <IcHUFSMEALS />
+        <SloganText>Meals for HUFS</SloganText>
+      </SloganContainer>
+      <GoogleLoginContainer>
+        <button onClick={handleGoogleLogin} style={{ background: 'none', border: 'none' }}>
+          <IcGoogleLogin />
+        </button>
+      </GoogleLoginContainer>
+      <Footer />
+    </NoticeLogContainer>
+  );
+};
+
+export default Login;

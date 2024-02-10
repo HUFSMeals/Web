@@ -219,6 +219,7 @@ const ShopInfo = styled.div`
 const ShopInfoItem = styled.p`
   font-size: 1.4rem;
   color: #666;
+  white-space: pre-line;
 `;
 
 const ShopNameRating = styled.div`
@@ -232,6 +233,9 @@ const SignatureDishesContainer = styled.div`
   margin-top: 20px;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center; // 별점을 중앙에 배치
+
 `;
 
 const DishCard = styled.div`
@@ -250,11 +254,10 @@ const DishName = styled.h3`
 `;
 
 const DishImage = styled.img`
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 200px;
+  max-height: 200px;
   border-radius: 10px;
   margin-bottom: 5px;
-
 `;
 
 const DishesContainer = styled.div`
@@ -291,7 +294,7 @@ const Shop: React.FC = () => {
             'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2ODA5MzU1LCJpYXQiOjE3MDU1MTMzNTUsImp0aSI6Ijc3OGE5OTg0ZjI4NjQyM2JiNWUyMGE3MjU5ZmE2NGYwIiwidXNlcl9pZCI6MX0.OExlMIcEj5pQKI3eGBXynZOSFwtqUheiaafIor8QqCM'
           });
   
-          const response = await fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/restaurant/detail/integ/${shopId}/`, { headers });
+          const response = await fetch(`https://hufsmeals.shop/restaurant/detail/integ/${shopId}/`, { headers });
           const data = await response.json();
           if (data.msg === "식당 세부정보 불러오기 성공") {
             setIntegratedShopDetails(data.data);
