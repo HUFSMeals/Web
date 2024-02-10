@@ -74,7 +74,7 @@ const NoticesPage: React.FC = () => {
     // TODO: Replace with actual API call
     const fetchNotices = async () => {
       try {
-        const response = await fetch('https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/notice/');
+        const response = await fetch('https://hufsmeals.shop/notice/');
         const data = await response.json();
         setNotices(data.data);
       } catch (error) {
