@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { theme } from "../styles/theme";
 import { IcMap, IcMypage, IcNotice } from "../../public/assets/images/icons";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 interface IFooter {
   width?: string;
   backgroundColor?: string;
@@ -48,6 +50,19 @@ const Footer = ({
   disabled,
   border = "0px",
 }: IFooter) => {
+  const navigate = useNavigate();
+
+  const handleMyPageClick = () => {
+    // 로컬 스토리지에서 로그인 상태 확인
+    const isLoggedIn = localStorage.getItem('accessToken');
+
+    // 로그인 상태에 따라 마이페이지 또는 로그인 페이지로 리다이렉트
+    if (isLoggedIn) {
+      navigate('/mypage');
+    } else {
+      navigate('/login');
+    }
+  };
   return (
     <StyledFooter
       width={width}
@@ -62,9 +77,9 @@ const Footer = ({
       <Link to="/">
         <IcMap />
       </Link>
-      <Link to="/mypage">
+      <button onClick={handleMyPageClick} style={{ background: 'none', border: 'none' }}>
         <IcMypage />
-      </Link>
+      </button>
     </StyledFooter>
   );
 };

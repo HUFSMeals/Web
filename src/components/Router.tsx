@@ -7,6 +7,7 @@ import Login from "../pages/login";
 import Shop from "../pages/shop";
 import SearchResult from "../pages/search/searchResult";
 import CreateReview from "../pages/review/createReview";
+import LoginLoading from "../pages/login/loginLoading";
 
 const Router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const Router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/loginLoading",
+    element: <LoginLoading />,
   },
   {
     path: "/shop/:id",
