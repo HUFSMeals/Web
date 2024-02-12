@@ -46,7 +46,6 @@ const MapComponent: React.FC = () => {
         console.error("Error fetching shops:", error);
       }
     };
-  
     fetchShops();
   }, []);
   
@@ -93,13 +92,14 @@ const getIconForCategory = (category : string) => {
       return PicBoo; // 기본 아이콘
   }
 };
-
   const { position, error } = useGeolocation();
   useKakaoLoader()
+  
 
   if (error) {
     return <div>Error: {error}</div>;
   }
+  console.log(placeData)
   return (
     <StyledMap>
       <Map center={position} style={{ width: "100%", height: "100%" }} level={3}>
