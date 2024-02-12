@@ -91,7 +91,7 @@ const NoticesPage: React.FC = () => {
     } else {
       // TODO: Replace with actual API call
       try {
-        const response = await fetch(`https://port-0-hufsmeals-1efqtf2dlrgj6rlh.sel5.cloudtype.app/notice/${id}/`);
+        const response = await fetch(`https://hufsmeals.shop/notice/${id}/`);
         const data = await response.json();
         setSelectedNotice(data.data);
       } catch (error) {
