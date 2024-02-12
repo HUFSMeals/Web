@@ -291,7 +291,7 @@ const Shop: React.FC = () => {
         try {
           // 헤더 설정
           const headers = new Headers({
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2ODA5MzU1LCJpYXQiOjE3MDU1MTMzNTUsImp0aSI6Ijc3OGE5OTg0ZjI4NjQyM2JiNWUyMGE3MjU5ZmE2NGYwIiwidXNlcl9pZCI6MX0.OExlMIcEj5pQKI3eGBXynZOSFwtqUheiaafIor8QqCM'
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTQ3Mjk2LCJpYXQiOjE3MDc2NTEyOTYsImp0aSI6ImY1ZDI3NjU4NjFmNTQ5ZWRiYmE3MTg5ZWQ4NjdkOWE3IiwidXNlcl9pZCI6M30.cYBy6jrzZFwdpF9erD6oYeGbJXJymuPcRx4JuFtiE4Y'
           });
   
           const response = await fetch(`https://hufsmeals.shop/restaurant/detail/integ/${shopId}/`, { headers });

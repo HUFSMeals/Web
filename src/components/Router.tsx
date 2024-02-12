@@ -8,6 +8,7 @@ import Shop from "../pages/shop";
 import SearchResult from "../pages/search/searchResult";
 import CreateReview from "../pages/review/createReview";
 import LoginLoading from "../pages/login/loginLoading";
+import UpdateReview from "../pages/review/updateReview";
 
 const Router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const Router = createBrowserRouter([
   {
     path: "/createReview",
     element: <CreateReview />,
+  },
+  {
+    path: "/review/update/:reviewId",
+    element: <UpdateReview />,
   },
 ]);
 
