@@ -9,6 +9,28 @@ import { RateStars } from "../review/rate";
 import { useNavigate } from 'react-router-dom';
 import Modal from "../../components/Modal";
 
+
+interface User {
+  id: number;
+  nickname: string;
+  language: string;
+}
+
+interface ReviewImage {
+  id: number;
+  review_image: string;
+}
+
+interface Review {
+  id: number;
+  user: User;
+  nickname: string;
+  title: string;
+  body: string;
+  created_at: string;
+  score: number;
+  image: ReviewImage[];
+}
   
 const MyPageLogContainer = styled.div`
   display: flex;
@@ -100,67 +122,43 @@ const ReviewBody = styled.p`
   font-size: 16px;
 `;
 
-const myReview ={
-	"msg" : "유저의 모든 리뷰 불러오기 성공",
-	"data" : [
-		{
-			"id" : 1, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "투썸플레이스 외대점",
-			"body" : "코히 한사바리 굿 ~.~", // 리뷰 본문
-			"created_at" : "2024-01-03",
-			"score" : 4.5, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Coffee&6"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Coffee&2"
-				},
-			]
-		},
-    {
-			"id" : 2, // 리뷰 id
-			"nickname" : "김멋사", // 리뷰 작성자 닉네임
-			"title" : "1988",
-			"body" : "N번째 멋사 회식.. 망고빙수와 치킨오꼬노미야끼 굿 ..", // 리뷰 본문
-			"created_at" : "2024-01-01",
-			"score" : 4, // 평점
-			"image" : [
-				{
-					"id" : 1, // 이미지 id
-					"review_image" : "https://source.unsplash.com/random/?Cocktail&3"
-				},
-				{
-					"id" : 2,
-					"review_image" : "https://source.unsplash.com/random/?Cocktail&5"
-				},
-			]
-		},
-    
-	]
-}
-
 const MyPage = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]); // 리뷰 상태를 Review 배열로 정의
   const [username, setUsername] = useState<string>('');
 
-  console.log(localStorage.getItem('accessToken')); // 접근 토큰 출력
-  console.log(localStorage.getItem('userInfo')); // 사용자 정보 출력
   useEffect(() => {
-    // 로컬 스토리지에서 'user_info'라는 키로 저장된 데이터 불러오기
-    const storedUserInfo = localStorage.getItem('user_info');
-    if (storedUserInfo) {
-      const userInfo = JSON.parse(storedUserInfo);
-      setUsername(userInfo.nickname); // 닉네임 설정
-    } else {
-      console.log('No user info found in localStorage');
+    const storedUserInfo = localStorage.getItem('userInfo');
+    const accessToken = localStorage.getItem('accessToken');
+    if (storedUserInfo && accessToken) {
+      const userInfo: User = JSON.parse(storedUserInfo);
+      setUsername(userInfo.nickname); // 사용자 이름 설정
+
+      // 리뷰 데이터 불러오기
+      const fetchMyReviews = async () => {
+        try {
+          const response = await fetch('https://hufsmeals.shop/review/myreview/', {
+            headers: {
+              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTQ3Mjk2LCJpYXQiOjE3MDc2NTEyOTYsImp0aSI6ImY1ZDI3NjU4NjFmNTQ5ZWRiYmE3MTg5ZWQ4NjdkOWE3IiwidXNlcl9pZCI6M30.cYBy6jrzZFwdpF9erD6oYeGbJXJymuPcRx4JuFtiE4Y'
+            }
+          });
+          const data: { msg: string; data: Review[] } = await response.json();
+          if (data.msg === "나의 모든 리뷰 불러오기 성공") {
+            setReviews(data.data);
+          } else {
+            console.error("Failed to fetch reviews:", data.msg);
+          }
+        } catch (error) {
+          console.error("Error fetching reviews:", error);
+        }
+      };
+
+      fetchMyReviews();
     }
   }, []);
+
 
   const handleEditClick = () => {
     navigate('/createReview');
@@ -190,29 +188,30 @@ const MyPage = () => {
       </ProfileImageContainer>
       <UserName>{username || '영준'}</UserName>
       <ReviewContainer>
-        <MyReviewText>My Reviews ( {myReview.data.length} )</MyReviewText>
-        {myReview.data.map((review) => (
-          <ReviewCard key={review.id}>
-            <ReviewHeader>
-              <IcKorean style={{ width: "40px", height: "40px" }}/> 
-              {/* 가게 사진으로 변경 예정 */}
-              <ReviewInfo>
-                <ReviewTitle>{review.title}</ReviewTitle>
-                <ReviewRateDate>
-                  <RateStars score= {review.score} />
-                  <ReviewDate>{review.created_at}</ReviewDate>
-                </ReviewRateDate>
-              </ReviewInfo>
-              <ReviewActions>
-                <IcEdit onClick={handleEditClick} />
-                <IcTrash onClick={() => handleTrashClick(review.id)} />
-              </ReviewActions>
-            </ReviewHeader>
-            <ReviewBody>{review.body}</ReviewBody>
-            <Carousel images={review.image} />
-          </ReviewCard>
-        ))}
-      </ReviewContainer>
+  <MyReviewText>My Reviews ( {reviews.length} )</MyReviewText>
+  {reviews.map((review) => (
+    <ReviewCard key={review.id}>
+      <ReviewHeader>
+        <ReviewInfo>
+          <ReviewTitle>{review.title}</ReviewTitle>
+          <ReviewRateDate>
+            <RateStars score={review.score} />
+            <ReviewDate>{review.created_at}</ReviewDate>
+          </ReviewRateDate>
+        </ReviewInfo>
+        <ReviewActions>
+          <IcEdit onClick={() => navigate(`/review/update/${review.id}`)} />
+          <IcTrash onClick={() => handleTrashClick(review.id)} />
+        </ReviewActions>
+      </ReviewHeader>
+      <ReviewBody>{review.body}</ReviewBody>
+      {review.image && review.image.length > 0 && (
+        <Carousel images={review.image} />
+      )}
+    </ReviewCard>
+  ))}
+</ReviewContainer>
+
       <Footer />
       {isModalOpen && (
         <Modal
