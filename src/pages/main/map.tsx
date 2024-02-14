@@ -99,7 +99,6 @@ const getIconForCategory = (category : string) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
-  console.log(placeData)
   return (
     <StyledMap>
       <Map center={position} style={{ width: "100%", height: "100%" }} level={3}>

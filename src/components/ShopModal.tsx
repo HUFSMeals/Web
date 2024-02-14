@@ -66,9 +66,10 @@ const ShopModalOverlay = styled.div`
 const ShopModalContent = styled.div`
   background-color: white;
   padding: 30px;
+  padding-top: 20px;
   border-radius: 5px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  width: 40%;
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: left;
